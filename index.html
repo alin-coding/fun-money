@@ -22,34 +22,25 @@
     header h1 { font-size: 2rem; font-weight: 800; letter-spacing: -0.5px; }
     header p { color: #555; font-size: 0.8rem; font-family: monospace; margin-top: 4px; }
 
+    /* Budget card */
     .budget-card {
-      background: #1c1c1c;
-      border-radius: 18px;
-      padding: 22px 22px 18px;
-      margin-bottom: 28px;
+      background: #1c1c1c; border-radius: 18px;
+      padding: 22px 22px 18px; margin-bottom: 28px;
     }
     .budget-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      margin-bottom: 16px;
+      display: flex; justify-content: space-between;
+      align-items: flex-start; margin-bottom: 16px;
     }
     .budget-label { font-size: 0.65rem; letter-spacing: 0.12em; color: #666; font-family: monospace; }
     .budget-amount { font-size: 2.4rem; font-weight: 800; margin-top: 4px; }
-    .budget-controls { display: flex; align-items: center; gap: 8px; }
-    .budget-adj {
-      width: 36px; height: 36px; border-radius: 10px;
-      background: #2a2a2a; border: none; color: #fff;
-      font-size: 1.2rem; font-weight: 700; cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
-      flex-shrink: 0;
+    .budget-input-wrap { display: flex; align-items: center; gap: 8px; }
+    .budget-input-wrap label { color: #666; font-size: 0.82rem; }
+    .budget-input {
+      background: #2a2a2a; border: none; border-radius: 10px;
+      color: #fff; font-size: 1rem; font-weight: 700;
+      padding: 8px 12px; width: 100px; text-align: right;
     }
-    .budget-adj:active { background: #3a3a3a; }
-    .budget-step {
-      background: #2a2a2a; border: none; border-radius: 8px;
-      color: #555; font-size: 0.7rem; padding: 4px 8px; cursor: pointer;
-    }
-    .budget-step.active { background: #6366f1; color: #fff; }
+    .budget-input:focus { outline: none; background: #333; }
 
     .progress-track {
       background: #2a2a2a; border-radius: 99px;
@@ -60,12 +51,12 @@
       transition: width 0.35s ease, background 0.35s ease;
     }
     .progress-fill.over { background: #ef4444; }
-
     .budget-footer { display: flex; justify-content: space-between; font-size: 0.82rem; font-family: monospace; }
     .remaining { font-weight: 700; }
     .remaining.over { color: #ef4444; }
     .pct { color: #555; }
 
+    /* Columns */
     .columns { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
     @media (max-width: 580px) { .columns { grid-template-columns: 1fr; } }
 
@@ -79,17 +70,15 @@
       padding: 10px; min-height: 220px; transition: background 0.2s;
     }
     .drop-zone.drag-over {
-      background: #1e1e2e;
-      outline: 2px dashed #6366f1; outline-offset: -2px;
+      background: #1e1e2e; outline: 2px dashed #6366f1; outline-offset: -2px;
     }
-
     .empty-state {
-      display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
-      height: 180px; color: #3a3a3a;
+      display: flex; flex-direction: column; align-items: center;
+      justify-content: center; height: 180px; color: #3a3a3a;
       font-family: monospace; font-size: 0.82rem; gap: 6px;
     }
 
+    /* Item card */
     .item-card {
       background: #252525; border-radius: 12px;
       padding: 13px 12px; display: flex; align-items: center;
@@ -99,7 +88,6 @@
     }
     .item-card:active { cursor: grabbing; }
     .item-card.dragging { opacity: 0.3; }
-
     .item-emoji {
       width: 40px; height: 40px; background: #1c1c1c;
       border-radius: 10px; display: flex; align-items: center;
@@ -110,39 +98,31 @@
     .item-desc { color: #666; font-size: 0.75rem; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .item-price { color: #6366f1; font-weight: 700; font-size: 0.9rem; flex-shrink: 0; }
 
-    .delete-btn, .dupe-btn {
+    .card-btn {
       position: absolute; width: 22px; height: 22px;
       border: none; border-radius: 50%; color: #fff;
       cursor: pointer; display: none;
-      align-items: center; justify-content: center;
+      align-items: center; justify-content: center; font-size: 0.6rem;
     }
-    .delete-btn { top: -6px; right: -6px; background: #ef4444; font-size: 0.6rem; }
+    .delete-btn { top: -6px; right: -6px; background: #ef4444; }
     .dupe-btn   { top: -6px; right: 20px; background: #6366f1; font-size: 0.8rem; font-weight: 700; }
+    .edit-btn   { top: -6px; right: 20px; background: #555; font-size: 0.7rem; }
 
-    /* Show on hover (desktop) */
-    .item-card:hover .delete-btn,
-    .item-card:hover .dupe-btn { display: flex; }
+    .item-card:hover .card-btn { display: flex; }
+    @media (hover: none) { .card-btn { display: flex; } }
 
-    /* Always show on touch devices */
-    @media (hover: none) {
-      .delete-btn, .dupe-btn { display: flex; }
-    }
-
-    /* Add bar — two rows on mobile */
+    /* Add bar */
     .add-bar {
       position: fixed; bottom: 0; left: 0; right: 0;
       background: #111; border-top: 1px solid #1e1e1e;
       padding: 10px 14px 20px; z-index: 50;
       display: flex; flex-direction: column; gap: 8px;
     }
-    .add-row {
-      display: flex; gap: 8px; align-items: center;
-    }
-
+    .add-row { display: flex; gap: 8px; align-items: center; }
     .emoji-btn {
       width: 44px; height: 44px; background: #1c1c1c;
-      border: none; border-radius: 10px;
-      font-size: 1.25rem; cursor: pointer; flex-shrink: 0;
+      border: none; border-radius: 10px; font-size: 1.25rem;
+      cursor: pointer; flex-shrink: 0;
     }
     .add-name {
       flex: 1; background: #1c1c1c; border: none; border-radius: 10px;
@@ -162,15 +142,15 @@
     }
     .add-btn:active { background: #ddd; }
 
-    input::placeholder { color: #444; }
-
-    /* On wider screens, collapse to one row */
     @media (min-width: 500px) {
       .add-bar { flex-direction: row; align-items: center; padding: 10px 14px 16px; }
       .add-row { flex: 1; }
       .add-row:first-child { flex: 2; }
     }
 
+    input::placeholder { color: #444; }
+
+    /* Emoji picker */
     .emoji-picker {
       position: fixed; bottom: 120px; left: 14px;
       background: #1e1e1e; border-radius: 14px; padding: 12px;
@@ -184,9 +164,52 @@
       background: none; border: none; font-size: 1.35rem;
       cursor: pointer; padding: 6px; border-radius: 8px; line-height: 1;
     }
-    .emoji-picker button:hover, .emoji-picker button:active { background: #2a2a2a; }
+    .emoji-picker button:active { background: #2a2a2a; }
 
-    /* Touch drag ghost */
+    /* Edit modal */
+    .modal-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.7);
+      z-index: 200; display: flex; align-items: flex-end;
+    }
+    .modal {
+      background: #1c1c1c; border-radius: 20px 20px 0 0;
+      padding: 24px 20px 40px; width: 100%;
+      display: flex; flex-direction: column; gap: 12px;
+    }
+    .modal-title {
+      font-size: 1rem; font-weight: 700; margin-bottom: 4px;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .modal-close {
+      background: #2a2a2a; border: none; color: #888;
+      border-radius: 50%; width: 28px; height: 28px;
+      font-size: 0.8rem; cursor: pointer;
+    }
+    .modal-row { display: flex; gap: 10px; align-items: center; }
+    .modal-emoji-btn {
+      width: 48px; height: 48px; background: #2a2a2a;
+      border: none; border-radius: 12px; font-size: 1.4rem;
+      cursor: pointer; flex-shrink: 0;
+    }
+    .modal-input {
+      flex: 1; background: #2a2a2a; border: none; border-radius: 10px;
+      color: #fff; font-size: 0.9rem; padding: 0 14px; height: 46px;
+    }
+    .modal-input:focus { outline: none; background: #333; }
+    .modal-price {
+      width: 90px; background: #2a2a2a; border: none; border-radius: 10px;
+      color: #6366f1; font-size: 1rem; font-weight: 700;
+      padding: 0 12px; height: 46px; text-align: right; flex-shrink: 0;
+    }
+    .modal-price:focus { outline: none; background: #333; }
+    .modal-save {
+      background: #6366f1; color: #fff; border: none; border-radius: 12px;
+      font-weight: 800; font-size: 0.95rem; height: 50px;
+      cursor: pointer; width: 100%; margin-top: 4px;
+    }
+    .modal-save:active { background: #4f52d1; }
+
+    /* Touch ghost */
     .touch-ghost {
       position: fixed; pointer-events: none; z-index: 999;
       opacity: 0.85; transform: scale(1.05);
@@ -207,16 +230,9 @@
       <div class="budget-label">MONTHLY BUDGET</div>
       <div class="budget-amount" id="budgetDisplay">$800</div>
     </div>
-    <div class="budget-controls">
-      <button class="budget-adj" onclick="adjustBudget(-1)">&#8722;</button>
-      <div style="display:flex;flex-direction:column;align-items:center;gap:4px">
-        <div style="display:flex;gap:4px">
-          <button class="budget-step" id="step25" onclick="setStep(25)">$25</button>
-          <button class="budget-step active" id="step50" onclick="setStep(50)">$50</button>
-          <button class="budget-step" id="step100" onclick="setStep(100)">$100</button>
-        </div>
-      </div>
-      <button class="budget-adj" onclick="adjustBudget(1)">+</button>
+    <div class="budget-input-wrap">
+      <label>budget $</label>
+      <input class="budget-input" type="number" id="budgetInput" value="800" min="0">
     </div>
   </div>
   <div class="progress-track">
@@ -243,16 +259,39 @@
   </div>
 </div>
 
+<!-- Emoji pickers -->
 <div class="emoji-picker" id="emojiPicker" style="display:none"></div>
+<div class="emoji-picker" id="editEmojiPicker" style="display:none"></div>
 
+<!-- Add bar -->
 <div class="add-bar">
   <div class="add-row">
-    <button class="emoji-btn" id="emojiBtn" onclick="togglePicker(event)">🎯</button>
+    <button class="emoji-btn" id="emojiBtn" onclick="togglePicker(event,'emojiPicker','emojiBtn')">🎯</button>
     <input class="add-name" id="newName" placeholder="item name" type="text">
   </div>
   <div class="add-row">
     <input class="add-price" id="newPrice" placeholder="$0" type="number" min="0">
     <button class="add-btn" onclick="addItem()">+ Add</button>
+  </div>
+</div>
+
+<!-- Edit modal -->
+<div class="modal-overlay" id="editModal" style="display:none" onclick="closeModal(event)">
+  <div class="modal">
+    <div class="modal-title">
+      <span>Edit Item</span>
+      <button class="modal-close" onclick="closeEditModal()">&#10005;</button>
+    </div>
+    <div class="modal-row">
+      <button class="modal-emoji-btn" id="editEmojiBtn" onclick="togglePicker(event,'editEmojiPicker','editEmojiBtn')">🎯</button>
+      <input class="modal-input" id="editName" placeholder="Name" type="text">
+    </div>
+    <input class="modal-input" id="editDesc" placeholder="Description (optional)" type="text">
+    <div class="modal-row">
+      <span style="color:#666;font-size:0.85rem">Price $</span>
+      <input class="modal-price" id="editPrice" type="number" min="0">
+    </div>
+    <button class="modal-save" onclick="saveEdit()">Save</button>
   </div>
 </div>
 
@@ -272,6 +311,7 @@ let state = {
 };
 
 let dragId = null;
+let editingId = null;
 
 function save() { localStorage.setItem('funmoney_v1', JSON.stringify(state)); }
 function load() { const s = localStorage.getItem('funmoney_v1'); if (s) state = JSON.parse(s); }
@@ -284,7 +324,6 @@ function updateBudget() {
   const total = plannedTotal(), budget = state.budget;
   const remaining = budget - total, over = remaining < 0;
   const pct = budget > 0 ? Math.round((total / budget) * 100) : 0;
-
   document.getElementById('budgetDisplay').textContent = `$${budget}`;
   const fill = document.getElementById('progressFill');
   fill.style.width = Math.min(pct, 100) + '%';
@@ -303,7 +342,7 @@ function render() {
   const unplanned = state.items.filter(i => i.zone === 'unplanned');
   const planned   = state.items.filter(i => i.zone === 'planned');
 
-  if (unplanned.length === 0) uz.innerHTML = '<div class="empty-state"><span>nothing left unplanned</span></div>';
+  if (unplanned.length === 0) uz.innerHTML = '<div class="empty-state"><span>no templates yet — add one below</span></div>';
   else unplanned.forEach(i => uz.appendChild(makeCard(i)));
 
   if (planned.length === 0) pz.innerHTML = '<div class="empty-state"><span>&#8592; drag items here</span></div>';
@@ -317,6 +356,8 @@ function makeCard(item) {
   card.className = 'item-card';
   card.draggable = true;
   card.dataset.id = item.id;
+
+  const isPlanned = item.zone === 'planned';
   card.innerHTML = `
     <div class="item-emoji">${item.emoji}</div>
     <div class="item-info">
@@ -324,48 +365,41 @@ function makeCard(item) {
       ${item.desc ? `<div class="item-desc">${item.desc}</div>` : ''}
     </div>
     <div class="item-price">$${item.price}</div>
-    ${item.zone === 'planned' ? `<button class="dupe-btn" onclick="dupeItem(${item.id},event)">+</button>` : ''}
-    <button class="delete-btn" onclick="deleteItem(${item.id},event)">&#10005;</button>
+    ${isPlanned
+      ? `<button class="card-btn dupe-btn" onclick="dupeItem(${item.id},event)">+</button>`
+      : `<button class="card-btn edit-btn" onclick="openEdit(${item.id},event)">&#9998;</button>`
+    }
+    <button class="card-btn delete-btn" onclick="deleteItem(${item.id},event)">&#10005;</button>
   `;
 
-  // Desktop drag
   card.addEventListener('dragstart', e => {
     dragId = item.id;
     setTimeout(() => card.classList.add('dragging'), 0);
     e.dataTransfer.effectAllowed = 'move';
   });
   card.addEventListener('dragend', () => card.classList.remove('dragging'));
-
-  // Touch drag
   addTouchDrag(card, item);
-
   return card;
 }
 
 // ── Touch drag ────────────────────────────────────────────
-let touchDragId = null;
-let ghost = null;
+let touchDragId = null, ghost = null;
 let touchOffsetX = 0, touchOffsetY = 0;
 
 function addTouchDrag(card, item) {
   card.addEventListener('touchstart', e => {
-    // Ignore taps on buttons
     if (e.target.closest('button')) return;
-
     touchDragId = item.id;
     const touch = e.touches[0];
     const rect = card.getBoundingClientRect();
     touchOffsetX = touch.clientX - rect.left;
     touchOffsetY = touch.clientY - rect.top;
-
-    // Build ghost
     ghost = card.cloneNode(true);
     ghost.className = 'item-card touch-ghost';
-    ghost.style.width  = rect.width + 'px';
-    ghost.style.left   = (touch.clientX - touchOffsetX) + 'px';
-    ghost.style.top    = (touch.clientY - touchOffsetY) + 'px';
+    ghost.style.width = rect.width + 'px';
+    ghost.style.left  = (touch.clientX - touchOffsetX) + 'px';
+    ghost.style.top   = (touch.clientY - touchOffsetY) + 'px';
     document.body.appendChild(ghost);
-
     card.classList.add('dragging');
     e.preventDefault();
   }, { passive: false });
@@ -375,40 +409,30 @@ function addTouchDrag(card, item) {
     const touch = e.touches[0];
     ghost.style.left = (touch.clientX - touchOffsetX) + 'px';
     ghost.style.top  = (touch.clientY - touchOffsetY) + 'px';
-
-    // Highlight drop zone under finger
     ghost.style.display = 'none';
     const el = document.elementFromPoint(touch.clientX, touch.clientY);
     ghost.style.display = '';
     document.querySelectorAll('.drop-zone').forEach(z => z.classList.remove('drag-over'));
     const zone = el && el.closest('.drop-zone');
     if (zone) zone.classList.add('drag-over');
-
     e.preventDefault();
   }, { passive: false });
 
   card.addEventListener('touchend', e => {
     if (!ghost) return;
     const touch = e.changedTouches[0];
-
     ghost.style.display = 'none';
     const el = document.elementFromPoint(touch.clientX, touch.clientY);
     ghost.remove(); ghost = null;
-
     document.querySelectorAll('.drop-zone').forEach(z => z.classList.remove('drag-over'));
-
     const zone = el && el.closest('.drop-zone');
-    if (zone && touchDragId !== null) {
-      moveItem(touchDragId, zone.id);
-    }
-
-    // Restore opacity in case render didn't fire
+    if (zone && touchDragId !== null) moveItem(touchDragId, zone.id);
     document.querySelectorAll('.item-card.dragging').forEach(c => c.classList.remove('dragging'));
     touchDragId = null;
   });
 }
 
-// ── Desktop drop handlers ─────────────────────────────────
+// ── Drop handlers ─────────────────────────────────────────
 function onDragOver(e) { e.preventDefault(); e.currentTarget.classList.add('drag-over'); }
 function onDragLeave(e) { e.currentTarget.classList.remove('drag-over'); }
 function onDrop(e, zone) {
@@ -423,12 +447,47 @@ function moveItem(id, targetZone) {
   const item = state.items.find(i => i.id === id);
   if (!item) return;
   if (item.zone === 'unplanned' && targetZone === 'planned') {
-    // Copy to planned — keep original in unplanned
     state.items.push({ ...item, id: state.nextId++, zone: 'planned' });
   } else if (item.zone === 'planned' && targetZone === 'unplanned') {
-    // Remove planned copy
     state.items = state.items.filter(i => i.id !== id);
   }
+  save(); render();
+}
+
+// ── Edit modal ────────────────────────────────────────────
+function openEdit(id, e) {
+  e.stopPropagation();
+  const item = state.items.find(i => i.id === id);
+  if (!item) return;
+  editingId = id;
+  document.getElementById('editEmojiBtn').textContent = item.emoji;
+  document.getElementById('editName').value  = item.name;
+  document.getElementById('editDesc').value  = item.desc || '';
+  document.getElementById('editPrice').value = item.price;
+  document.getElementById('editModal').style.display = 'flex';
+}
+
+function closeEditModal() {
+  document.getElementById('editModal').style.display = 'none';
+  document.getElementById('editEmojiPicker').style.display = 'none';
+  editingId = null;
+}
+
+function closeModal(e) {
+  if (e.target === document.getElementById('editModal')) closeEditModal();
+}
+
+function saveEdit() {
+  const item = state.items.find(i => i.id === editingId);
+  if (!item) return;
+  item.emoji = document.getElementById('editEmojiBtn').textContent;
+  item.name  = document.getElementById('editName').value.trim() || item.name;
+  item.desc  = document.getElementById('editDesc').value.trim();
+  item.price = parseFloat(document.getElementById('editPrice').value) || 0;
+
+  // Also update any planned copies that came from this template
+  // (match by original name — best effort)
+  closeEditModal();
   save(); render();
 }
 
@@ -456,37 +515,45 @@ function deleteItem(id, e) {
   save(); render();
 }
 
-function togglePicker(e) {
+// ── Emoji picker ──────────────────────────────────────────
+function togglePicker(e, pickerId, btnId) {
   e.stopPropagation();
-  const picker = document.getElementById('emojiPicker');
+  const picker = document.getElementById(pickerId);
+  const btn    = document.getElementById(btnId);
+  // Close all pickers first
+  document.querySelectorAll('.emoji-picker').forEach(p => {
+    if (p.id !== pickerId) p.style.display = 'none';
+  });
   if (picker.style.display === 'none') {
     picker.innerHTML = '';
     EMOJIS.forEach(em => {
-      const btn = document.createElement('button');
-      btn.textContent = em;
-      btn.onclick = () => { state.emoji = em; document.getElementById('emojiBtn').textContent = em; picker.style.display = 'none'; };
-      picker.appendChild(btn);
+      const b = document.createElement('button');
+      b.textContent = em;
+      b.onclick = () => { btn.textContent = em; if (btnId === 'emojiBtn') state.emoji = em; picker.style.display = 'none'; };
+      picker.appendChild(b);
     });
+    // Position near the button
+    const rect = btn.getBoundingClientRect();
+    picker.style.bottom = (window.innerHeight - rect.top + 8) + 'px';
+    picker.style.left = Math.max(8, rect.left) + 'px';
     picker.style.display = 'grid';
   } else {
     picker.style.display = 'none';
   }
 }
 
-let budgetStep = 50;
-function setStep(val) {
-  budgetStep = val;
-  document.querySelectorAll('.budget-step').forEach(b => b.classList.remove('active'));
-  document.getElementById('step' + val).classList.add('active');
-}
-function adjustBudget(dir) {
-  state.budget = Math.max(0, state.budget + dir * budgetStep);
+// ── Listeners ─────────────────────────────────────────────
+document.getElementById('budgetInput').addEventListener('input', e => {
+  state.budget = parseFloat(e.target.value) || 0;
   save(); updateBudget();
-}
+});
 document.getElementById('newName').addEventListener('keydown', e => { if (e.key === 'Enter') addItem(); });
 document.addEventListener('click', e => {
-  const picker = document.getElementById('emojiPicker');
-  if (picker.style.display !== 'none' && !picker.contains(e.target) && e.target.id !== 'emojiBtn') picker.style.display = 'none';
+  document.querySelectorAll('.emoji-picker').forEach(p => {
+    if (p.style.display !== 'none' && !p.contains(e.target) && e.target.id !== 'emojiBtn' && e.target.id !== 'editEmojiBtn') {
+      p.style.display = 'none';
+    }
+  });
 });
 
 load(); render();
