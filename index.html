@@ -41,7 +41,6 @@
       padding: 8px 12px; width: 100px; text-align: right;
     }
     .budget-input:focus { outline: none; background: #333; }
-
     .progress-track {
       background: #2a2a2a; border-radius: 99px;
       height: 7px; margin-bottom: 12px; overflow: hidden;
@@ -64,63 +63,53 @@
       font-size: 0.65rem; letter-spacing: 0.12em;
       color: #555; font-family: monospace; margin-bottom: 10px;
     }
-
     .drop-zone {
       background: #1c1c1c; border-radius: 16px;
-      padding: 10px; min-height: 220px; transition: background 0.2s;
+      padding: 10px; min-height: 160px; transition: background 0.2s;
     }
     .drop-zone.drag-over {
       background: #1e1e2e; outline: 2px dashed #6366f1; outline-offset: -2px;
     }
     .empty-state {
-      display: flex; flex-direction: column; align-items: center;
-      justify-content: center; height: 180px; color: #3a3a3a;
-      font-family: monospace; font-size: 0.82rem; gap: 6px;
+      display: flex; align-items: center; justify-content: center;
+      height: 120px; color: #3a3a3a;
+      font-family: monospace; font-size: 0.82rem;
     }
 
     /* Item card */
     .item-card {
       background: #252525; border-radius: 12px;
-      padding: 13px 12px 13px 6px; display: flex; align-items: center;
+      padding: 12px; display: flex; align-items: center;
       gap: 10px; margin-bottom: 7px;
-      user-select: none; position: relative; transition: opacity 0.15s;
-      touch-action: pan-y;
+      position: relative; cursor: grab;
     }
     .item-card.dragging { opacity: 0.3; }
-
-    .drag-handle {
-      display: flex; flex-direction: column; gap: 3px;
-      padding: 6px 4px; cursor: grab; touch-action: none; flex-shrink: 0;
-      opacity: 0.3;
-    }
-    .drag-handle span {
-      display: block; width: 14px; height: 2px;
-      background: #fff; border-radius: 2px;
-    }
-    .drag-handle:active { cursor: grabbing; opacity: 0.7; }
-    .item-card:hover .drag-handle { opacity: 0.6; }
     .item-emoji {
-      width: 40px; height: 40px; background: #1c1c1c;
+      width: 38px; height: 38px; background: #1c1c1c;
       border-radius: 10px; display: flex; align-items: center;
-      justify-content: center; font-size: 1.25rem; flex-shrink: 0;
+      justify-content: center; font-size: 1.2rem; flex-shrink: 0;
     }
     .item-info { flex: 1; min-width: 0; }
-    .item-name { font-weight: 700; font-size: 0.9rem; }
-    .item-desc { color: #666; font-size: 0.75rem; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .item-price { color: #6366f1; font-weight: 700; font-size: 0.9rem; flex-shrink: 0; }
+    .item-name { font-weight: 700; font-size: 0.88rem; }
+    .item-desc { color: #666; font-size: 0.73rem; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .item-price { color: #6366f1; font-weight: 700; font-size: 0.88rem; flex-shrink: 0; }
 
-    .card-btn {
-      position: absolute; width: 22px; height: 22px;
-      border: none; border-radius: 50%; color: #fff;
-      cursor: pointer; display: none;
-      align-items: center; justify-content: center; font-size: 0.6rem;
+    /* Action buttons on cards */
+    .card-actions { display: flex; gap: 6px; flex-shrink: 0; }
+    .act-btn {
+      width: 30px; height: 30px; border-radius: 8px;
+      border: none; color: #fff; font-size: 1rem;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      font-weight: 700; flex-shrink: 0;
     }
-    .delete-btn { top: -6px; right: -6px; background: #ef4444; }
-    .dupe-btn   { top: -6px; right: 20px; background: #6366f1; font-size: 0.8rem; font-weight: 700; }
-    .edit-btn   { top: -6px; right: 20px; background: #555; font-size: 0.7rem; }
-
-    .item-card:hover .card-btn { display: flex; }
-    @media (hover: none) { .card-btn { display: flex; } }
+    .btn-add    { background: #6366f1; }
+    .btn-add:active { background: #4f52d1; }
+    .btn-dupe   { background: #374151; }
+    .btn-dupe:active { background: #4b5563; }
+    .btn-delete { background: #3a1a1a; color: #ef4444; font-size: 0.75rem; }
+    .btn-delete:active { background: #ef4444; color: #fff; }
+    .btn-edit   { background: #2a2a2a; color: #888; font-size: 0.8rem; }
+    .btn-edit:active { background: #444; }
 
     /* Add bar */
     .add-bar {
@@ -152,19 +141,16 @@
       height: 44px; cursor: pointer; white-space: nowrap; flex-shrink: 0;
     }
     .add-btn:active { background: #ddd; }
-
     @media (min-width: 500px) {
       .add-bar { flex-direction: row; align-items: center; padding: 10px 14px 16px; }
       .add-row { flex: 1; }
       .add-row:first-child { flex: 2; }
     }
-
     input::placeholder { color: #444; }
 
     /* Emoji picker */
     .emoji-picker {
-      position: fixed; bottom: 120px; left: 14px;
-      background: #1e1e1e; border-radius: 14px; padding: 12px;
+      position: fixed; background: #1e1e1e; border-radius: 14px; padding: 12px;
       display: grid; grid-template-columns: repeat(6, 1fr);
       gap: 6px; z-index: 100; box-shadow: 0 8px 40px rgba(0,0,0,0.6);
     }
@@ -199,8 +185,7 @@
     .modal-row { display: flex; gap: 10px; align-items: center; }
     .modal-emoji-btn {
       width: 48px; height: 48px; background: #2a2a2a;
-      border: none; border-radius: 12px; font-size: 1.4rem;
-      cursor: pointer; flex-shrink: 0;
+      border: none; border-radius: 12px; font-size: 1.4rem; cursor: pointer; flex-shrink: 0;
     }
     .modal-input {
       flex: 1; background: #2a2a2a; border: none; border-radius: 10px;
@@ -220,7 +205,7 @@
     }
     .modal-save:active { background: #4f52d1; }
 
-    /* Touch ghost */
+    /* Touch ghost for desktop drag */
     .touch-ghost {
       position: fixed; pointer-events: none; z-index: 999;
       opacity: 0.85; transform: scale(1.05);
@@ -232,7 +217,7 @@
 
 <header>
   <h1>Fun Money</h1>
-  <p>drag to plan &middot; drop to unplan</p>
+  <p>tap + to plan &middot; tap &times; to remove</p>
 </header>
 
 <div class="budget-card">
@@ -270,11 +255,9 @@
   </div>
 </div>
 
-<!-- Emoji pickers -->
 <div class="emoji-picker" id="emojiPicker" style="display:none"></div>
 <div class="emoji-picker" id="editEmojiPicker" style="display:none"></div>
 
-<!-- Add bar -->
 <div class="add-bar">
   <div class="add-row">
     <button class="emoji-btn" id="emojiBtn" onclick="togglePicker(event,'emojiPicker','emojiBtn')">🎯</button>
@@ -286,7 +269,6 @@
   </div>
 </div>
 
-<!-- Edit modal -->
 <div class="modal-overlay" id="editModal" style="display:none" onclick="closeModal(event)">
   <div class="modal">
     <div class="modal-title">
@@ -353,10 +335,10 @@ function render() {
   const unplanned = state.items.filter(i => i.zone === 'unplanned');
   const planned   = state.items.filter(i => i.zone === 'planned');
 
-  if (unplanned.length === 0) uz.innerHTML = '<div class="empty-state"><span>no templates yet — add one below</span></div>';
+  if (unplanned.length === 0) uz.innerHTML = '<div class="empty-state">add templates below</div>';
   else unplanned.forEach(i => uz.appendChild(makeCard(i)));
 
-  if (planned.length === 0) pz.innerHTML = '<div class="empty-state"><span>&#8592; drag items here</span></div>';
+  if (planned.length === 0) pz.innerHTML = '<div class="empty-state">tap + to plan items</div>';
   else planned.forEach(i => pz.appendChild(makeCard(i)));
 
   updateBudget();
@@ -370,20 +352,23 @@ function makeCard(item) {
 
   const isPlanned = item.zone === 'planned';
   card.innerHTML = `
-    <div class="drag-handle"><span></span><span></span><span></span></div>
     <div class="item-emoji">${item.emoji}</div>
     <div class="item-info">
       <div class="item-name">${item.name}</div>
       ${item.desc ? `<div class="item-desc">${item.desc}</div>` : ''}
     </div>
     <div class="item-price">$${item.price}</div>
-    ${isPlanned
-      ? `<button class="card-btn dupe-btn" onclick="dupeItem(${item.id},event)">+</button>`
-      : `<button class="card-btn edit-btn" onclick="openEdit(${item.id},event)">&#9998;</button>`
-    }
-    <button class="card-btn delete-btn" onclick="deleteItem(${item.id},event)">&#10005;</button>
+    <div class="card-actions">
+      ${isPlanned
+        ? `<button class="act-btn btn-dupe"   onclick="dupeItem(${item.id},event)" title="Add another">+</button>
+           <button class="act-btn btn-delete" onclick="deleteItem(${item.id},event)" title="Remove">&#10005;</button>`
+        : `<button class="act-btn btn-edit"   onclick="openEdit(${item.id},event)" title="Edit">&#9998;</button>
+           <button class="act-btn btn-add"    onclick="addToPlanned(${item.id},event)" title="Add to plan">+</button>`
+      }
+    </div>
   `;
 
+  // Desktop drag still works as a bonus
   card.addEventListener('dragstart', e => {
     dragId = item.id;
     setTimeout(() => card.classList.add('dragging'), 0);
@@ -391,81 +376,54 @@ function makeCard(item) {
   });
   card.addEventListener('dragend', () => card.classList.remove('dragging'));
 
-  const handle = card.querySelector('.drag-handle');
-  handle.setAttribute('draggable', true);
-  handle.addEventListener('dragstart', e => e.stopPropagation());
-  addTouchDrag(handle, card, item);
   return card;
 }
 
-// ── Touch drag ────────────────────────────────────────────
-let touchDragId = null, ghost = null;
-let touchOffsetX = 0, touchOffsetY = 0;
-
-function addTouchDrag(handle, card, item) {
-  handle.addEventListener('touchstart', e => {
-    touchDragId = item.id;
-    const touch = e.touches[0];
-    const rect = card.getBoundingClientRect();
-    touchOffsetX = touch.clientX - rect.left;
-    touchOffsetY = touch.clientY - rect.top;
-    ghost = card.cloneNode(true);
-    ghost.className = 'item-card touch-ghost';
-    ghost.style.width = rect.width + 'px';
-    ghost.style.left  = (touch.clientX - touchOffsetX) + 'px';
-    ghost.style.top   = (touch.clientY - touchOffsetY) + 'px';
-    document.body.appendChild(ghost);
-    card.classList.add('dragging');
-    e.preventDefault();
-  }, { passive: false });
-
-  handle.addEventListener('touchmove', e => {
-    if (!ghost) return;
-    const touch = e.touches[0];
-    ghost.style.left = (touch.clientX - touchOffsetX) + 'px';
-    ghost.style.top  = (touch.clientY - touchOffsetY) + 'px';
-    ghost.style.display = 'none';
-    const el = document.elementFromPoint(touch.clientX, touch.clientY);
-    ghost.style.display = '';
-    document.querySelectorAll('.drop-zone').forEach(z => z.classList.remove('drag-over'));
-    const zone = el && el.closest('.drop-zone');
-    if (zone) zone.classList.add('drag-over');
-    e.preventDefault();
-  }, { passive: false });
-
-  handle.addEventListener('touchend', e => {
-    if (!ghost) return;
-    const touch = e.changedTouches[0];
-    ghost.style.display = 'none';
-    const el = document.elementFromPoint(touch.clientX, touch.clientY);
-    ghost.remove(); ghost = null;
-    document.querySelectorAll('.drop-zone').forEach(z => z.classList.remove('drag-over'));
-    const zone = el && el.closest('.drop-zone');
-    if (zone && touchDragId !== null) moveItem(touchDragId, zone.id);
-    document.querySelectorAll('.item-card.dragging').forEach(c => c.classList.remove('dragging'));
-    touchDragId = null;
-  });
-}
-
-// ── Drop handlers ─────────────────────────────────────────
+// ── Desktop drop ──────────────────────────────────────────
 function onDragOver(e) { e.preventDefault(); e.currentTarget.classList.add('drag-over'); }
 function onDragLeave(e) { e.currentTarget.classList.remove('drag-over'); }
 function onDrop(e, zone) {
   e.preventDefault();
   e.currentTarget.classList.remove('drag-over');
   if (dragId === null) return;
-  moveItem(dragId, zone);
+  const item = state.items.find(i => i.id === dragId);
+  if (!item) { dragId = null; return; }
+  if (item.zone === 'unplanned' && zone === 'planned') {
+    state.items.push({ ...item, id: state.nextId++, zone: 'planned' });
+  } else if (item.zone === 'planned' && zone === 'unplanned') {
+    state.items = state.items.filter(i => i.id !== dragId);
+  }
+  save(); render();
   dragId = null;
 }
 
-function moveItem(id, targetZone) {
+// ── Item actions ──────────────────────────────────────────
+function addToPlanned(id, e) {
+  e.stopPropagation();
   const item = state.items.find(i => i.id === id);
-  if (!item) return;
-  if (item.zone === 'unplanned' && targetZone === 'planned') {
-    state.items.push({ ...item, id: state.nextId++, zone: 'planned' });
-  } else if (item.zone === 'planned' && targetZone === 'unplanned') {
-    state.items = state.items.filter(i => i.id !== id);
-  }
+  if (item) { state.items.push({ ...item, id: state.nextId++, zone: 'planned' }); save(); render(); }
+}
+
+function dupeItem(id, e) {
+  e.stopPropagation();
+  const orig = state.items.find(i => i.id === id);
+  if (orig) { state.items.push({ ...orig, id: state.nextId++ }); save(); render(); }
+}
+
+function deleteItem(id, e) {
+  e.stopPropagation();
+  state.items = state.items.filter(i => i.id !== id);
+  save(); render();
+}
+
+function addItem() {
+  const raw   = document.getElementById('newName').value.trim();
+  const price = parseFloat(document.getElementById('newPrice').value) || 0;
+  if (!raw) return;
+  const parts = raw.split(/[·|]/);
+  state.items.push({ id: state.nextId++, emoji: state.emoji, name: parts[0].trim(), desc: parts[1] ? parts[1].trim() : '', price, zone: 'unplanned' });
+  document.getElementById('newName').value  = '';
+  document.getElementById('newPrice').value = '';
   save(); render();
 }
 
@@ -499,35 +457,7 @@ function saveEdit() {
   item.name  = document.getElementById('editName').value.trim() || item.name;
   item.desc  = document.getElementById('editDesc').value.trim();
   item.price = parseFloat(document.getElementById('editPrice').value) || 0;
-
-  // Also update any planned copies that came from this template
-  // (match by original name — best effort)
-  closeEditModal();
-  save(); render();
-}
-
-// ── Item actions ──────────────────────────────────────────
-function addItem() {
-  const raw   = document.getElementById('newName').value.trim();
-  const price = parseFloat(document.getElementById('newPrice').value) || 0;
-  if (!raw) return;
-  const parts = raw.split(/[·|]/);
-  state.items.push({ id: state.nextId++, emoji: state.emoji, name: parts[0].trim(), desc: parts[1] ? parts[1].trim() : '', price, zone: 'unplanned' });
-  document.getElementById('newName').value  = '';
-  document.getElementById('newPrice').value = '';
-  save(); render();
-}
-
-function dupeItem(id, e) {
-  e.stopPropagation();
-  const orig = state.items.find(i => i.id === id);
-  if (orig) { state.items.push({ ...orig, id: state.nextId++ }); save(); render(); }
-}
-
-function deleteItem(id, e) {
-  e.stopPropagation();
-  state.items = state.items.filter(i => i.id !== id);
-  save(); render();
+  closeEditModal(); save(); render();
 }
 
 // ── Emoji picker ──────────────────────────────────────────
@@ -535,10 +465,7 @@ function togglePicker(e, pickerId, btnId) {
   e.stopPropagation();
   const picker = document.getElementById(pickerId);
   const btn    = document.getElementById(btnId);
-  // Close all pickers first
-  document.querySelectorAll('.emoji-picker').forEach(p => {
-    if (p.id !== pickerId) p.style.display = 'none';
-  });
+  document.querySelectorAll('.emoji-picker').forEach(p => { if (p.id !== pickerId) p.style.display = 'none'; });
   if (picker.style.display === 'none') {
     picker.innerHTML = '';
     EMOJIS.forEach(em => {
@@ -547,20 +474,18 @@ function togglePicker(e, pickerId, btnId) {
       b.onclick = () => { btn.textContent = em; if (btnId === 'emojiBtn') state.emoji = em; picker.style.display = 'none'; };
       picker.appendChild(b);
     });
-    // Position near the button
     const rect = btn.getBoundingClientRect();
     picker.style.bottom = (window.innerHeight - rect.top + 8) + 'px';
-    picker.style.left = Math.max(8, rect.left) + 'px';
+    picker.style.left   = Math.max(8, rect.left) + 'px';
+    picker.style.right  = 'auto';
     picker.style.display = 'grid';
   } else {
     picker.style.display = 'none';
   }
 }
 
-// ── Listeners ─────────────────────────────────────────────
 document.getElementById('budgetInput').addEventListener('input', e => {
-  state.budget = parseFloat(e.target.value) || 0;
-  save(); updateBudget();
+  state.budget = parseFloat(e.target.value) || 0; save(); updateBudget();
 });
 document.getElementById('newName').addEventListener('keydown', e => { if (e.key === 'Enter') addItem(); });
 document.addEventListener('click', e => {
