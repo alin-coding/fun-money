@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Fun Money">
+  <title>Fun Money</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: #111;
+      color: #fff;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      min-height: 100vh;
+      padding: 28px 20px 100px;
+    }
+
+    header { margin-bottom: 24px; }
+    header h1 { font-size: 2rem; font-weight: 800; letter-spacing: -0.5px; }
+    header p { color: #555; font-size: 0.8rem; font-family: monospace; margin-top: 4px; }
+
+    /* Budget card */
+    .budget-card {
+      background: #1c1c1c;
+      border-radius: 18px;
+      padding: 22px 22px 18px;
+      margin-bottom: 28px;
+    }
+    .budget-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 16px;
+    }
+    .budget-label { font-size: 0.65rem; letter-spacing: 0.12em; color: #666; font-family: monospace; }
+    .budget-amount { font-size: 2.4rem; font-weight: 800; margin-top: 4px; }
+    .budget-input-row { display: flex; align-items: center; gap: 8px; }
+    .budget-input-row label { color: #666; font-size: 0.82rem; }
+    .budget-input {
+      background: #2a2a2a;
+      border: none;
+      border-radius: 10px;
+      color: #fff;
+      font-size: 1rem;
+      font-weight: 700;
+      padding: 8px 12px;
+      width: 90px;
+      text-align: right;
+    }
+    .budget-input:focus { outline: none; background: #333; }
+
+    .progress-track {
+      background: #2a2a2a;
+      border-radius: 99px;
+      height: 7px;
+      margin-bottom: 12px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      border-radius: 99px;
+      background: #6366f1;
+      transition: width 0.35s ease, background 0.35s ease;
+    }
+    .progress-fill.over { background: #ef4444; }
+
+    .budget-footer {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.82rem;
+      font-family: monospace;
+    }
+    .remaining { font-weight: 700; }
+    .remaining.over { color: #ef4444; }
+    .pct { color: #555; }
+
+    /* Columns */
+    .columns {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    @media (max-width: 580px) {
+      .columns { grid-template-columns: 1fr; }
+    }
+
+    .col-label {
+      font-size: 0.65rem;
+      letter-spacing: 0.12em;
+      color: #555;
+      font-family: monospace;
+      margin-bottom: 10px;
+    }
+
+    .drop-zone {
+      background: #1c1c1c;
+      border-radius: 16px;
+      padding: 10px;
+      min-height: 220px;
+      transition: background 0.2s;
+    }
+    .drop-zone.drag-over {
+      background: #1e1e2e;
+      outline: 2px dashed #6366f1;
+      outline-offset: -2px;
+    }
+
+    .empty-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 180px;
+      color: #3a3a3a;
+      font-family: monospace;
+      font-size: 0.82rem;
+      gap: 6px;
+    }
+
+    /* Item card */
+    .item-card {
+      background: #252525;
+      border-radius: 12px;
+      padding: 13px 12px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 7px;
+      cursor: grab;
+      user-select: none;
+      position: relative;
+      transition: opacity 0.15s;
+    }
+    .item-card:active { cursor: grabbing; }
+    .item-card.dragging { opacity: 0.3; }
+
+    .item-emoji {
+      width: 40px; height: 40px;
+      background: #1c1c1c;
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.25rem;
+      flex-shrink: 0;
+    }
+    .item-info { flex: 1; min-width: 0; }
+    .item-name { font-weight: 700; font-size: 0.9rem; }
+    .item-desc { color: #666; font-size: 0.75rem; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .item-price { color: #6366f1; font-weight: 700; font-size: 0.9rem; flex-shrink: 0; }
+
+    .delete-btn, .dupe-btn {
+      position: absolute;
+      width: 18px; height: 18px;
+      border: none; border-radius: 50%;
+      color: #fff; font-size: 0.6rem;
+      cursor: pointer;
+      display: none;
+      align-items: center; justify-content: center;
+    }
+    .delete-btn { top: -5px; right: -5px; background: #ef4444; }
+    .dupe-btn   { top: -5px; right: 18px; background: #6366f1; font-size: 0.75rem; font-weight: 700; }
+    .item-card:hover .delete-btn,
+    .item-card:hover .dupe-btn { display: flex; }
+
+    /* Add bar */
+    .add-bar {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      background: #111;
+      border-top: 1px solid #1e1e1e;
+      padding: 10px 14px 16px;
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      z-index: 50;
+    }
+
+    .emoji-btn {
+      width: 44px; height: 44px;
+      background: #1c1c1c;
+      border: none; border-radius: 10px;
+      font-size: 1.25rem;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .add-name {
+      flex: 1;
+      background: #1c1c1c;
+      border: none; border-radius: 10px;
+      color: #fff; font-size: 0.88rem;
+      padding: 0 14px;
+      height: 44px;
+    }
+    .add-name:focus { outline: none; background: #222; }
+
+    .add-price {
+      width: 72px;
+      background: #1c1c1c;
+      border: none; border-radius: 10px;
+      color: #fff; font-size: 0.88rem;
+      padding: 0 10px;
+      height: 44px;
+      text-align: right;
+    }
+    .add-price:focus { outline: none; background: #222; }
+
+    .add-btn {
+      background: #fff; color: #000;
+      border: none; border-radius: 10px;
+      font-weight: 800; font-size: 0.82rem;
+      padding: 0 14px; height: 44px;
+      cursor: pointer; white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .add-btn:hover { background: #ddd; }
+
+    input::placeholder { color: #444; }
+
+    /* Emoji picker */
+    .emoji-picker {
+      position: fixed;
+      bottom: 70px; left: 14px;
+      background: #1e1e1e;
+      border-radius: 14px;
+      padding: 12px;
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 6px;
+      z-index: 100;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.6);
+    }
+    .emoji-picker button {
+      background: none; border: none;
+      font-size: 1.35rem;
+      cursor: pointer;
+      padding: 6px;
+      border-radius: 8px;
+      line-height: 1;
+    }
+    .emoji-picker button:hover { background: #2a2a2a; }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Fun Money</h1>
+  <p>drag to plan &middot; drop to unplan</p>
+</header>
+
+<div class="budget-card">
+  <div class="budget-top">
+    <div>
+      <div class="budget-label">MONTHLY BUDGET</div>
+      <div class="budget-amount" id="budgetDisplay">$800</div>
+    </div>
+    <div class="budget-input-row">
+      <label>budget $</label>
+      <input class="budget-input" type="number" id="budgetInput" value="800" min="0">
+    </div>
+  </div>
+  <div class="progress-track">
+    <div class="progress-fill" id="progressFill" style="width:0%"></div>
+  </div>
+  <div class="budget-footer">
+    <span class="remaining" id="remainingText">$800 remaining</span>
+    <span class="pct" id="pctText">0% used</span>
+  </div>
+</div>
+
+<div class="columns">
+  <div>
+    <div class="col-label">UNPLANNED</div>
+    <div class="drop-zone" id="unplanned"
+      ondragover="onDragOver(event)"
+      ondrop="onDrop(event,'unplanned')"
+      ondragleave="onDragLeave(event)">
+    </div>
+  </div>
+  <div>
+    <div class="col-label">PLANNED THIS MONTH</div>
+    <div class="drop-zone" id="planned"
+      ondragover="onDragOver(event)"
+      ondrop="onDrop(event,'planned')"
+      ondragleave="onDragLeave(event)">
+    </div>
+  </div>
+</div>
+
+<div class="emoji-picker" id="emojiPicker" style="display:none"></div>
+
+<div class="add-bar">
+  <button class="emoji-btn" id="emojiBtn" onclick="togglePicker(event)">🎯</button>
+  <input class="add-name" id="newName" placeholder="name · description" type="text">
+  <input class="add-price" id="newPrice" placeholder="$0" type="number" min="0">
+  <button class="add-btn" onclick="addItem()">+ Add</button>
+</div>
+
+<script>
+const EMOJIS = ['⛳','🍽️','✈️','☕','📚','🎮','🎬','🏋️','🛒','🎁','🏖️','🚗','🍕','🎵','📱','👗','💄','🏠','💻','🎨','🍷','🎯','🏀','🎸','🌮','💪','🏊','🎲','🛍️','🎪','🧴','🎀','🥂','🌴','🍦','🎳'];
+
+let state = {
+  budget: 800,
+  emoji: '🎯',
+  nextId: 7,
+  items: [
+    { id:1, emoji:'⛳',  name:'Golf round',     desc:'18 holes with spouse', price:75,  zone:'unplanned' },
+    { id:2, emoji:'🍽️', name:'Date night',     desc:'dinner & activity',    price:50,  zone:'unplanned' },
+    { id:3, emoji:'✈️', name:'Cali trip fund',  desc:'saving toward flight', price:250, zone:'unplanned' },
+    { id:4, emoji:'☕',  name:'Coffee runs',    desc:'weekly treat',         price:40,  zone:'unplanned' },
+    { id:5, emoji:'📚',  name:'Books / apps',   desc:'learning stuff',       price:30,  zone:'unplanned' },
+    { id:6, emoji:'🎮',  name:'Steam / games',  desc:'whatever looks fun',   price:35,  zone:'unplanned' },
+  ],
+};
+
+let dragId = null;
+
+function save() { localStorage.setItem('funmoney_v1', JSON.stringify(state)); }
+function load() {
+  const s = localStorage.getItem('funmoney_v1');
+  if (s) state = JSON.parse(s);
+}
+
+function plannedTotal() {
+  return state.items.filter(i => i.zone === 'planned').reduce((s, i) => s + i.price, 0);
+}
+
+function updateBudget() {
+  const total    = plannedTotal();
+  const budget   = state.budget;
+  const remaining = budget - total;
+  const over     = remaining < 0;
+  const pct      = budget > 0 ? Math.round((total / budget) * 100) : 0;
+
+  document.getElementById('budgetDisplay').textContent = `$${budget}`;
+
+  const fill = document.getElementById('progressFill');
+  fill.style.width = Math.min(pct, 100) + '%';
+  fill.className = 'progress-fill' + (over ? ' over' : '');
+
+  const rem = document.getElementById('remainingText');
+  rem.textContent = over ? `$${Math.abs(remaining)} over budget` : `$${remaining} remaining`;
+  rem.className = 'remaining' + (over ? ' over' : '');
+
+  document.getElementById('pctText').textContent = `${pct}% used`;
+}
+
+function render() {
+  const uz = document.getElementById('unplanned');
+  const pz = document.getElementById('planned');
+  uz.innerHTML = '';
+  pz.innerHTML = '';
+
+  const unplanned = state.items.filter(i => i.zone === 'unplanned');
+  const planned   = state.items.filter(i => i.zone === 'planned');
+
+  if (unplanned.length === 0) {
+    uz.innerHTML = '<div class="empty-state"><span>nothing left unplanned</span></div>';
+  } else {
+    unplanned.forEach(i => uz.appendChild(makeCard(i)));
+  }
+
+  if (planned.length === 0) {
+    pz.innerHTML = '<div class="empty-state"><span>&#8592;</span><span>drag items here to plan them</span></div>';
+  } else {
+    planned.forEach(i => pz.appendChild(makeCard(i)));
+  }
+
+  updateBudget();
+}
+
+function makeCard(item) {
+  const card = document.createElement('div');
+  card.className = 'item-card';
+  card.draggable = true;
+  card.dataset.id = item.id;
+  card.innerHTML = `
+    <div class="item-emoji">${item.emoji}</div>
+    <div class="item-info">
+      <div class="item-name">${item.name}</div>
+      ${item.desc ? `<div class="item-desc">${item.desc}</div>` : ''}
+    </div>
+    <div class="item-price">$${item.price}</div>
+    <button class="dupe-btn"   onclick="dupeItem(${item.id}, event)">+</button>
+    <button class="delete-btn" onclick="deleteItem(${item.id}, event)">&#10005;</button>
+  `;
+  card.addEventListener('dragstart', e => {
+    dragId = item.id;
+    setTimeout(() => card.classList.add('dragging'), 0);
+    e.dataTransfer.effectAllowed = 'move';
+  });
+  card.addEventListener('dragend', () => card.classList.remove('dragging'));
+  return card;
+}
+
+function onDragOver(e) {
+  e.preventDefault();
+  e.currentTarget.classList.add('drag-over');
+}
+function onDragLeave(e) {
+  e.currentTarget.classList.remove('drag-over');
+}
+function onDrop(e, zone) {
+  e.preventDefault();
+  e.currentTarget.classList.remove('drag-over');
+  if (dragId === null) return;
+  const item = state.items.find(i => i.id === dragId);
+  if (item) { item.zone = zone; save(); render(); }
+  dragId = null;
+}
+
+function addItem() {
+  const raw   = document.getElementById('newName').value.trim();
+  const price = parseFloat(document.getElementById('newPrice').value) || 0;
+  if (!raw) return;
+  const parts = raw.split(/[·|]/);
+  const name  = parts[0].trim();
+  const desc  = parts[1] ? parts[1].trim() : '';
+  state.items.push({ id: state.nextId++, emoji: state.emoji, name, desc, price, zone: 'unplanned' });
+  document.getElementById('newName').value  = '';
+  document.getElementById('newPrice').value = '';
+  save(); render();
+}
+
+function dupeItem(id, e) {
+  e.stopPropagation();
+  const original = state.items.find(i => i.id === id);
+  if (!original) return;
+  state.items.push({ ...original, id: state.nextId++ });
+  save(); render();
+}
+
+function deleteItem(id, e) {
+  e.stopPropagation();
+  state.items = state.items.filter(i => i.id !== id);
+  save(); render();
+}
+
+function togglePicker(e) {
+  e.stopPropagation();
+  const picker = document.getElementById('emojiPicker');
+  if (picker.style.display === 'none') {
+    picker.innerHTML = '';
+    EMOJIS.forEach(em => {
+      const btn = document.createElement('button');
+      btn.textContent = em;
+      btn.onclick = () => {
+        state.emoji = em;
+        document.getElementById('emojiBtn').textContent = em;
+        picker.style.display = 'none';
+      };
+      picker.appendChild(btn);
+    });
+    picker.style.display = 'grid';
+  } else {
+    picker.style.display = 'none';
+  }
+}
+
+document.getElementById('budgetInput').addEventListener('input', e => {
+  state.budget = parseFloat(e.target.value) || 0;
+  save(); updateBudget();
+});
+
+document.getElementById('newName').addEventListener('keydown', e => {
+  if (e.key === 'Enter') addItem();
+});
+
+document.addEventListener('click', e => {
+  const picker = document.getElementById('emojiPicker');
+  if (picker.style.display !== 'none' && !picker.contains(e.target) && e.target.id !== 'emojiBtn') {
+    picker.style.display = 'none';
+  }
+});
+
+load();
+render();
+</script>
+</body>
+</html>
