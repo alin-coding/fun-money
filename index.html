@@ -81,13 +81,24 @@
     /* Item card */
     .item-card {
       background: #252525; border-radius: 12px;
-      padding: 13px 12px; display: flex; align-items: center;
-      gap: 12px; margin-bottom: 7px; cursor: grab;
+      padding: 13px 12px 13px 6px; display: flex; align-items: center;
+      gap: 10px; margin-bottom: 7px;
       user-select: none; position: relative; transition: opacity 0.15s;
-      touch-action: none;
+      touch-action: pan-y;
     }
-    .item-card:active { cursor: grabbing; }
     .item-card.dragging { opacity: 0.3; }
+
+    .drag-handle {
+      display: flex; flex-direction: column; gap: 3px;
+      padding: 6px 4px; cursor: grab; touch-action: none; flex-shrink: 0;
+      opacity: 0.3;
+    }
+    .drag-handle span {
+      display: block; width: 14px; height: 2px;
+      background: #fff; border-radius: 2px;
+    }
+    .drag-handle:active { cursor: grabbing; opacity: 0.7; }
+    .item-card:hover .drag-handle { opacity: 0.6; }
     .item-emoji {
       width: 40px; height: 40px; background: #1c1c1c;
       border-radius: 10px; display: flex; align-items: center;
@@ -359,6 +370,7 @@ function makeCard(item) {
 
   const isPlanned = item.zone === 'planned';
   card.innerHTML = `
+    <div class="drag-handle"><span></span><span></span><span></span></div>
     <div class="item-emoji">${item.emoji}</div>
     <div class="item-info">
       <div class="item-name">${item.name}</div>
@@ -378,7 +390,11 @@ function makeCard(item) {
     e.dataTransfer.effectAllowed = 'move';
   });
   card.addEventListener('dragend', () => card.classList.remove('dragging'));
-  addTouchDrag(card, item);
+
+  const handle = card.querySelector('.drag-handle');
+  handle.setAttribute('draggable', true);
+  handle.addEventListener('dragstart', e => e.stopPropagation());
+  addTouchDrag(handle, card, item);
   return card;
 }
 
@@ -386,9 +402,8 @@ function makeCard(item) {
 let touchDragId = null, ghost = null;
 let touchOffsetX = 0, touchOffsetY = 0;
 
-function addTouchDrag(card, item) {
-  card.addEventListener('touchstart', e => {
-    if (e.target.closest('button')) return;
+function addTouchDrag(handle, card, item) {
+  handle.addEventListener('touchstart', e => {
     touchDragId = item.id;
     const touch = e.touches[0];
     const rect = card.getBoundingClientRect();
@@ -404,7 +419,7 @@ function addTouchDrag(card, item) {
     e.preventDefault();
   }, { passive: false });
 
-  card.addEventListener('touchmove', e => {
+  handle.addEventListener('touchmove', e => {
     if (!ghost) return;
     const touch = e.touches[0];
     ghost.style.left = (touch.clientX - touchOffsetX) + 'px';
@@ -418,7 +433,7 @@ function addTouchDrag(card, item) {
     e.preventDefault();
   }, { passive: false });
 
-  card.addEventListener('touchend', e => {
+  handle.addEventListener('touchend', e => {
     if (!ghost) return;
     const touch = e.changedTouches[0];
     ghost.style.display = 'none';
